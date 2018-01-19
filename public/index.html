@@ -8,7 +8,22 @@
 
     </head>
     <body>
-        <h1>Hello, world!</h1>
+        <h1>Welcome to chat app</h1>
 
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            "use strict";
+
+            // Open a connection in a socket, client -> server and server -> client
+            var socket = io();
+
+            socket.on('connect', () => {
+                console.log('Connected to server');
+            });
+
+            socket.on('disconnect', () => {
+                console.log('Disconnected from server');
+            });
+        </script>
     </body>
 </html>
