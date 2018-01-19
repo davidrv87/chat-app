@@ -6,11 +6,6 @@ var socket = io();
 // Use regular functions to avoid problems with old browsers
 socket.on('connect', function () {
     console.log('Connected to server');
-
-    socket.emit('createMessage', {
-        from: 'David',
-        text: 'An awesome message from the client'
-    });
 });
 
 socket.on('newMessage', function(message) {

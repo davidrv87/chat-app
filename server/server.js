@@ -23,15 +23,16 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
     console.log('New user connected');
 
-    socket.emit('newMessage', {
-        from: 'Mara',
-        text: 'Hey! This is my message',
-        createdAt: new Date().getTime()
-    });
-
     socket.on('createMessage', function(newMessage) {
         console.log('Received new message!');
         console.log(JSON.stringify(newMessage, undefined, 2));
+        // io.emit() emits an event to every single connection
+        // socket.emit() emits an event to a single connection
+        io.emit('newMessage', {
+            from: newMessage.from,
+            text: newMessage.text,
+            createdAt: new Date().getTime()
+        });
     });
 
     socket.on('disconnect', () => {
