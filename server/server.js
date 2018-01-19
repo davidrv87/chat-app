@@ -23,16 +23,37 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
     console.log('New user connected');
 
+    // Greet the new user
+    socket.emit('newMessage', {
+        from: 'Admin',
+        text: 'Welcome to the chat',
+        createdAt: new Date().getTime()
+    });
+
+    // Inform the rest of the users
+    socket.broadcast.emit('newMessage', {
+        from: 'Admin',
+        text: 'New user joined the chat',
+        createdAt: new Date().getTime()
+    });
+
     socket.on('createMessage', function(newMessage) {
         console.log('Received new message!');
         console.log(JSON.stringify(newMessage, undefined, 2));
-        // io.emit() emits an event to every single connection
+
         // socket.emit() emits an event to a single connection
-        io.emit('newMessage', {
-            from: newMessage.from,
-            text: newMessage.text,
-            createdAt: new Date().getTime()
-        });
+        // io.emit() emits an event to every single connection
+        // io.emit('newMessage', {
+            // from: newMessage.from,
+            // text: newMessage.text,
+            // createdAt: new Date().getTime()
+        // });
+        // socket.broadcast.emit() will emit the event to everybody but the calling socket
+        // socket.broadcast.emit('newMessage', {
+        //     from: newMessage.from,
+        //     text: newMessage.text,
+        //     createdAt: new Date().getTime()
+        // });
     });
 
     socket.on('disconnect', () => {
