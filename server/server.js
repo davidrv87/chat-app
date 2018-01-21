@@ -25,24 +25,22 @@ io.on('connection', (socket) => {
     console.log('New user connected');
 
     // Greet the new user
+    // socket.emit() emits an event to a single connection, the calling socket
     socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat'));
 
     // Inform the rest of the users
+    // socket.broadcast.emit() will emit the event to everybody but the calling socket
     socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined the chat'));
 
-    socket.on('createMessage', function(newMessage) {
+    // The second argument in the function is the callback specified in the socket.emit(o, cb) in the client
+    socket.on('createMessage', function(newMessage, callback) {
         console.log('Received new message!');
         console.log(JSON.stringify(newMessage, undefined, 2));
 
-        // socket.emit() emits an event to a single connection
         // io.emit() emits an event to every single connection
         io.emit('newMessage', generateMessage(newMessage.from, newMessage.text));
-        // socket.broadcast.emit() will emit the event to everybody but the calling socket
-        // socket.broadcast.emit('newMessage', {
-        //     from: newMessage.from,
-        //     text: newMessage.text,
-        //     createdAt: new Date().getTime()
-        // });
+        callback('This is from the server');
+
     });
 
     socket.on('disconnect', () => {
