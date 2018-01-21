@@ -7,7 +7,7 @@ const http       = require('http');
 const express    = require('express');
 const socketIO   = require('socket.io');
 
-const {generateMessage} = require('./utils/message');
+const {generateMessage, generateLocationMessage} = require('./utils/message');
 const publicPath = path.join(__dirname, '../public');
 var port         = process.env.PORT;
 
@@ -33,14 +33,17 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined the chat'));
 
     // The second argument in the function is the callback specified in the socket.emit(o, cb) in the client
-    socket.on('createMessage', function(newMessage, callback) {
+    socket.on('createMessage', (newMessage, callback) => {
         console.log('Received new message!');
         console.log(JSON.stringify(newMessage, undefined, 2));
 
         // io.emit() emits an event to every single connection
         io.emit('newMessage', generateMessage(newMessage.from, newMessage.text));
         callback('This is from the server');
+    });
 
+    socket.on('createLocationMessage', (coords) => {
+        io.emit('newLocationMessage', generateLocationMessage('Admin', coords));
     });
 
     socket.on('disconnect', () => {
