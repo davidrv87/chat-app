@@ -20,12 +20,15 @@ socket.on('disconnect', function () {
 
 $('#message-form').on('submit', function (e) {
     e.preventDefault();
+    var textBox = $('[name="message"]');
 
     // The third argument is a callback that fires when the message arrives to the server
     socket.emit('createMessage', {
         from: 'User',
-        text: $('[name="message"]').val()
+        text: textBox.val()
     }, function(data) {
         console.log(data);
+        textBox.val('');
     });
+
 });
