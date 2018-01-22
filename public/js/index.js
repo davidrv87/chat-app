@@ -3,6 +3,22 @@
 // Open a connection in a socket, client -> server and server -> client
 var socket = io();
 
+function scrollToBottom () {
+    // Selectors
+    var messages = $('#messages');
+    var newMessage = messages.children('li:last-child'); // last message
+    // Heights
+    var clientHeight = messages.prop('clientHeight'); // visible height of the messages
+    var scrollTop = messages.prop('scrollTop'); // distance scrolled from the top
+    var scrollHeight = messages.prop('scrollHeight'); // height of the messages (including not visible)
+    var newMessageHeight = newMessage.innerHeight(); // height of the last message
+    var lastMessageHeight = newMessage.prev().innerHeight(); // height of the second last message
+
+    if (clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
+        messages.scrollTop(scrollHeight);
+    }
+}
+
 // Use regular functions to avoid problems with old browsers
 socket.on('connect', function () {
     console.log('Connected to server');
@@ -18,6 +34,7 @@ socket.on('newMessage', function (message) {
     });
 
     $('#messages').append(html);
+    scrollToBottom();
 });
 
 socket.on('newLocationMessage', function (message) {
@@ -30,6 +47,7 @@ socket.on('newLocationMessage', function (message) {
     });
 
     $('#messages').append(html);
+    scrollToBottom();
 });
 
 socket.on('disconnect', function () {
