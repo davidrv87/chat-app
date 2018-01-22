@@ -4,20 +4,29 @@
         <!-- Required meta tags -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="/css/styles.css">
         <title>Page Title</title>
 
     </head>
-    <body>
-        <h1>Welcome to chat app</h1>
+    <body class="chat">
 
-        <ol id="messages"></ol>
+        <div class="chat__sidebar">
+            <h3>People</h3>
+            <div id="users"></div>
+        </div>
 
-        <form action="" id="message-form">
-            <input type="text" name="message" placeholder="Message"/>
-            <button>Send</button>
-        </form>
+        <div class="chat__main">
+            <ol id="messages" class="chat__messages"></ol>
 
-        <button id="send-location">Send location</button>
+            <div class="chat__footer">
+                <form action="" id="message-form">
+                    <input type="text" name="message" placeholder="Message" autofocus autocomplete="off"/>
+                    <button>Send</button>
+                </form>
+
+                <button id="send-location">Send location</button>
+            </div>
+        </div>
 
         <script src="/socket.io/socket.io.js"></script>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
