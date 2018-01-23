@@ -53,13 +53,23 @@ io.on('connection', (socket) => {
 
     // The second argument in the function is the callback specified in the socket.emit(o, cb) in the client
     socket.on('createMessage', (newMessage, callback) => {
-        // io.emit() emits an event to every single connection
-        io.emit('newMessage', generateMessage(newMessage.from, newMessage.text));
-        callback();
+        var user = users.getUser(socket.id);
+
+        if (user && isRealString(newMessage.text)) {
+            // io.emit() emits an event to every single connection
+            socket.broadcast.to(user.room).emit('newMessage', generateMessage(user.name, newMessage.text));
+            socket.emit('newMessage', generateMessage('Me', newMessage.text));
+            callback();
+        }
     });
 
     socket.on('createLocationMessage', (coords) => {
-        io.emit('newLocationMessage', generateLocationMessage('Admin', coords));
+        var user = users.getUser(socket.id);
+
+        if (user) {
+            socket.broadcast.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords));
+            socket.emit('newLocationMessage', generateMessage('Me', coords));
+        }
     });
 
     socket.on('disconnect', () => {
