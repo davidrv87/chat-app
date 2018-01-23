@@ -21,7 +21,17 @@ function scrollToBottom () {
 
 // Use regular functions to avoid problems with old browsers
 socket.on('connect', function () {
-    console.log('Connected to server');
+    var params = $.deparam(window.location.search);
+
+    // Emit the join event when someone enters the chat
+    socket.emit('join', params, function (err) {
+        if (err) {
+            alert(err);
+            window.location.href = '/';
+        } else {
+            console.log('No error');
+        }
+    });
 });
 
 socket.on('newMessage', function (message) {
@@ -54,6 +64,15 @@ socket.on('disconnect', function () {
     console.log('Disconnected from server');
 });
 
+socket.on('updateUserList', function (users){
+    var ol = $('<ol></ol>');
+    users.forEach(function (user) {
+        ol.append($('<li></li>').text(user));
+    });
+
+    $('#users').html(ol);
+});
+
 $('#message-form').on('submit', function (e) {
     e.preventDefault();
     var messageTextBox = $('[name="message"]');
@@ -62,8 +81,7 @@ $('#message-form').on('submit', function (e) {
     socket.emit('createMessage', {
         from: 'User',
         text: messageTextBox.val()
-    }, function(data) {
-        console.log(data);
+    }, function() {
         messageTextBox.val('');
     });
 });
